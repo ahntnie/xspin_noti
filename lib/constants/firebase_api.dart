@@ -5,20 +5,20 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:xspin_noti/app/app_sp.dart';
 import 'package:xspin_noti/app/app_sp_key.dart';
 
-Future<void> _handleBackground(RemoteMessage message) async {
-  print('Background Notification: ${message.toMap()}');
-  print("Data: ${message.data}");
-  final title = message.data['title'];
-  final body = message.data['body'];
-  final idNoTi = message.data['idNoTi'] ?? '1';
-  print('Received idNoTi (foreground): $idNoTi');
-  print('Received sss (foreground): $title');
-  print('Received idNaaaaaaoTi (foreground): $body');
-  print('Notification: ${message.notification}');
-  if (title != null && body != null) {
-    _showLocalNotification(title, body, message.data);
-  }
-}
+// @pragma('vm:entry-point')
+// Future<void> _handleBackground(RemoteMessage message) async {
+//   print('Background Notification: ${message.toMap()}');
+//   print("Data: ${message.data}");
+//   final title = message.data['title'];
+//   final body = message.data['body'];
+//   final idNoTi = message.data['idNoTi'] ?? '1';
+//   print('Received idNoTi (Background): $idNoTi');
+//   print('Received sss (Background): $title');
+//   print('Received idNaaaaaaoTi (Background): $body');
+//   if (title != null && body != null) {
+//     _showLocalNotification(title, body, message.data);
+//   }
+// }
 
 Future<void> _showLocalNotification(
     String? title, String? body, Map<String, dynamic> data) async {
@@ -36,8 +36,8 @@ Future<void> _showLocalNotification(
     android: androidDetails,
   );
 
-  final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  await localNotificationsPlugin.show(
+  // Dùng instance đã khởi tạo từ trước
+  await FirebaseApi._localNotificationsPlugin.show(
     DateTime.now().millisecondsSinceEpoch ~/ 1000,
     title,
     body,
@@ -61,10 +61,37 @@ class FirebaseApi {
       sound: true,
     );
     await firebaseMessaging.subscribeToTopic(FCM_TOPIC_ALL);
-    FirebaseMessaging.onBackgroundMessage(_handleBackground);
+    // FirebaseMessaging.onBackgroundMessage(_handleBackground);
     FirebaseMessaging.onMessage.listen(_handleForeground);
     // FirebaseMessaging.onMessage
     await _initializeLocalNotifications();
+  }
+
+  static Future<void> showLocalNotification(
+      String? title, String? body, Map<String, dynamic> data) async {
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'xspin_notification_channel_id',
+      'Xspin Notifications',
+      channelDescription: 'Thông báo Xspin',
+      importance: Importance.high,
+      priority: Priority.high,
+      largeIcon: DrawableResourceAndroidBitmap('ic_notification'),
+      icon: '@drawable/notifications',
+    );
+
+    const NotificationDetails platformDetails = NotificationDetails(
+      android: androidDetails,
+    );
+
+    // Dùng instance đã khởi tạo từ trước
+    await FirebaseApi._localNotificationsPlugin.show(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title,
+      body,
+      platformDetails,
+      payload: jsonEncode(data),
+    );
   }
 
   String? getToken() {
