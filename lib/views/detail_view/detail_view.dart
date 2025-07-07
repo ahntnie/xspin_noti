@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
+import 'package:xspin_noti/models/noti.model.dart';
 import 'package:xspin_noti/models/project.model.dart';
 import 'package:xspin_noti/utils/colors/app_color.dart';
 import 'package:xspin_noti/utils/colors/app_theme.dart';
-import 'package:xspin_noti/view_models/project/project_viewModel.dart';
+import 'package:xspin_noti/view_models/project/projectNoti_viewModel.dart';
 
 class DetailView extends StatefulWidget {
-  const DetailView(
-      {super.key, required this.projectModel, required this.projectViewModel});
-  final ProjectModel projectModel;
+  const DetailView({super.key, required this.projectViewModel});
   final ProjectViewmodel projectViewModel;
 
   @override
@@ -31,7 +30,7 @@ class _DetailViewState extends State<DetailView> {
               preferredSize: const Size.fromHeight(80.0),
               child: AppBar(
                 title: Text(
-                  widget.projectModel.tenDuAn ?? '',
+                  widget.projectViewModel.currentProject!.tenDuAn ?? '',
                   style: AppTheme.headLineLarge32.copyWith(
                     color: AppColors.gradient100,
                   ),
@@ -58,7 +57,7 @@ class _DetailViewState extends State<DetailView> {
                   Row(
                     children: [
                       Image.network(
-                        widget.projectModel.hinhLogo!,
+                        widget.projectViewModel.currentProject!.hinhLogo!,
                         width: 40,
                         height: 40,
                       ),
@@ -68,13 +67,13 @@ class _DetailViewState extends State<DetailView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.projectModel.tenDuAn ?? '',
+                              widget.projectViewModel.currentNoti!.tieuDe ?? '',
                               softWrap: true,
                               overflow: TextOverflow.visible,
                               style: AppTheme.titleLarge20,
                             ),
                             Text(
-                              'Từ ${widget.projectModel.tenDuAn} ngày ${widget.projectModel.ngayTao}',
+                              'Từ ${widget.projectViewModel.currentProject!.tenDuAn} ngày ${widget.projectViewModel.currentProject!.ngayTao}',
                               style: AppTheme.bodyMedium14.copyWith(
                                 color: AppColors.mono100,
                               ),
@@ -89,7 +88,8 @@ class _DetailViewState extends State<DetailView> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.projectModel.moTa ?? 'Chưa có mô tả nào',
+                    widget.projectViewModel.currentNoti!.noiDung ??
+                        'Chưa có mô tả nào',
                     style: AppTheme.bodyMedium14.copyWith(
                       color: AppColors.mono100,
                     ),

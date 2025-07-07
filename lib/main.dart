@@ -10,49 +10,37 @@ import 'package:xspin_noti/firebase_options.dart';
 import 'package:xspin_noti/views/auth_view/login_view/login_view.dart';
 import 'package:xspin_noti/views/home_view/home_view.dart';
 
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print('🎯 Background message received: ${message.messageId}');
-  print('🔥 Message data: ${message.data}');
-
-  final title = message.data['title'];
-  final body = message.data['body'];
-  if (title != null && body != null) {
-    await FirebaseApi.showLocalNotification(
-        title, body, message.data); // hoặc static method
-  }
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Register background message handler TRƯỚC KHI RUN APP
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
+  // Giữ splash screen
   FlutterNativeSplash.preserve(
-    widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
-  );
+      widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Khởi tạo Firebase
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('🔥 Firebase initialized successfully');
+  } catch (e) {
+    print('❌ Error initializing Firebase: $e');
+  }
 
-  print('🔥 Firebase initialized successfully');
-
-  // Init Firebase Notifications
+  // Khởi tạo thông báo Firebase
   FirebaseApi firebaseApi = FirebaseApi();
-  await firebaseApi.initNotifications();
-
-  // Subcribe topic
+  firebaseApi.initNotifications();
   String FCM_TOPIC_ALL = "xspin_noti";
   FirebaseMessaging.instance.subscribeToTopic(FCM_TOPIC_ALL);
 
+  // Khởi tạo Dependency Injection
   await DependencyInjection.init();
 
+  // Kiểm tra trạng thái đăng nhập
   final userJson = await AppSP.get(AppSPKey.userInfo);
   final isLoggedIn = userJson != null;
 
+  // Xóa splash screen sau khi kiểm tra
   FlutterNativeSplash.remove();
 
   runApp(MyApp(isLoggedIn: isLoggedIn));

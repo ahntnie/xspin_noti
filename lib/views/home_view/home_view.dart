@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:stacked/stacked.dart';
+import 'package:xspin_noti/constants/app_api.dart';
 import 'package:xspin_noti/utils/colors/app_color.dart';
 import 'package:xspin_noti/utils/colors/app_theme.dart';
 import 'package:xspin_noti/views/auth_view/profile_view/profile_view.dart';
 import 'package:xspin_noti/views/detail_view/detail_view.dart';
 import 'package:xspin_noti/views/group_view/group_view.dart';
 
-import '../../view_models/project/project_viewModel.dart';
+import '../../view_models/project/projectNoti_viewModel.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -80,7 +81,8 @@ class _HomeViewState extends State<HomeView> {
                           itemBuilder: (context, index) {
                             return ListTile(
                               leading: Image.network(
-                                viewModel.projectsModel![index].hinhLogo!,
+                                viewModel.projectsModel![index].hinhLogo! ??
+                                    '${Api.hostImage}viewModel.projectsModel![index].hinhLogo!',
                                 width: 40,
                                 height: 40,
                               ),
