@@ -1,43 +1,65 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:xspin_noti/app/app_sp.dart';
+import 'package:xspin_noti/app/app_sp_key.dart';
 import 'package:xspin_noti/app/di.dart';
 import 'package:xspin_noti/constants/firebase_api.dart';
 import 'package:xspin_noti/firebase_options.dart';
+import 'package:xspin_noti/views/auth_view/login_view/login_view.dart';
 import 'package:xspin_noti/views/home_view/home_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Giữ splash screen
+  FlutterNativeSplash.preserve(
+      widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
+
+  // Khởi tạo Firebase
   try {
-    // Khởi tạo Firebase một lần duy nhất
     await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     print('🔥 Firebase initialized successfully');
   } catch (e) {
     print('❌ Error initializing Firebase: $e');
   }
+
+  // Khởi tạo thông báo Firebase
   FirebaseApi firebaseApi = FirebaseApi();
   firebaseApi.initNotifications();
   String FCM_TOPIC_ALL = "xspin_noti";
   FirebaseMessaging.instance.subscribeToTopic(FCM_TOPIC_ALL);
+
+  // Khởi tạo Dependency Injection
   await DependencyInjection.init();
-  runApp(const MyApp());
+
+  // Kiểm tra trạng thái đăng nhập
+  final userJson = await AppSP.get(AppSPKey.userInfo);
+  final isLoggedIn = userJson != null;
+
+  // Xóa splash screen sau khi kiểm tra
+  FlutterNativeSplash.remove();
+
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  const MyApp({required this.isLoggedIn, super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Xspin',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFED1925)),
         useMaterial3: true,
       ),
-      home: const HomeView(),
+      home: isLoggedIn ? const HomeView() : const LoginView(),
     );
   }
 }
