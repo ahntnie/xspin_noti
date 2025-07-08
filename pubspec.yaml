@@ -44,7 +44,7 @@ dependencies:
   cloud_firestore:
   firebase_core:
   firebase_messaging:
-  flutter_local_notifications:
+  flutter_local_notifications: ^10.0.0
   flutter_app_badge: ^2.0.2
   google_fonts: ^6.2.1
   awesome_dialog: ^3.2.1
