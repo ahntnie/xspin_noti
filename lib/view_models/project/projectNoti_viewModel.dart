@@ -38,7 +38,7 @@ class ProjectViewmodel extends BaseViewModel {
     setBusy(true);
     projectsModelByID = await projectRequest.handleLoadProjectByID(
         idThanhVien: AppSP.get(AppSPKey.idUser), idDuAn: idDuAn);
-    print(projectsModelByID!.length);
+    print('projectsModelByID!.length ${projectsModelByID!.length}');
     setBusy(false);
     notifyListeners();
   }
@@ -47,7 +47,7 @@ class ProjectViewmodel extends BaseViewModel {
     setBusy(true);
     notiModel = await notiRequest.handleLoadNoti(
         idThanhVien: AppSP.get(AppSPKey.idUser), idDuAn: idDuAn);
-    print(notiModel!.length);
+    print('notiModel!.length: ${notiModel!.length}');
     setBusy(false);
     notifyListeners();
   }
