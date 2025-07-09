@@ -44,7 +44,7 @@ dependencies:
   cloud_firestore:
   firebase_core:
   firebase_messaging:
-  flutter_local_notifications:
+  flutter_local_notifications: ^10.0.0
   flutter_app_badge: ^2.0.2
   google_fonts: ^6.2.1
   awesome_dialog: ^3.2.1
@@ -100,7 +100,7 @@ flutter:
 flutter_native_splash:
   android: true
   color: "#ed1925"
-  image: assets/images/icon_app.png # Thay bằng đường dẫn logo của bạn
+  image: assets/images/icon_splash.png # Thay bằng đường dẫn logo của bạn
   fullscreen: true
 
   android_12:
