@@ -1,47 +1,43 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:xspin_noti/app/app_sp.dart';
-import 'package:xspin_noti/app/app_sp_key.dart';
-import 'package:image/image.dart' as img;
+import 'package:xspin_noti/models/noti.model.dart';
+import 'package:xspin_noti/requests/noti_request.dart';
 
 Future<void> _handleBackground(RemoteMessage message) async {
+  await Firebase.initializeApp(); // Đảm bảo khởi tạo Firebase
   print('Background Notification: ${message.toMap()}');
   print("Data: ${message.data}");
-  final title = message.data['title'];
-  final body = message.data['body'];
+  final title = message.data['title'] ?? message.notification?.title;
+  final body = message.data['body'] ?? message.notification?.body;
   final idNoTi = message.data['idNoTi'] ?? '1';
-  print('Received idNoTi (foreground): $idNoTi');
-  print('Received sss (foreground): $title');
-  print('Received idNaaaaaaoTi (foreground): $body');
-  print('Notification: ${message.notification}');
+  print('Received idNoTi (background): $idNoTi');
+  print('Received title (background): $title');
+  print('Received body (background): $body');
   if (title != null && body != null) {
+    await FlutterLocalNotificationsPlugin().cancelAll();
     _showLocalNotification(title, body, message.data);
   }
 }
 
 Future<void> _showLocalNotification(
     String? title, String? body, Map<String, dynamic> data) async {
-  // Khởi tạo Dio
   final dio = Dio();
-  // Lấy URL hình ảnh từ data payload
   final imageUrl = data['imageUrl'] as String?;
 
-  // Tạo AndroidNotificationDetails với largeIcon động
   AndroidNotificationDetails androidDetails;
 
   if (imageUrl != null && imageUrl.isNotEmpty) {
     try {
-      // Tải hình ảnh từ URL bằng Dio
       final response = await dio.get(
         imageUrl,
         options: Options(responseType: ResponseType.bytes),
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        // Sử dụng ByteArrayAndroidBitmap cho largeIcon
         androidDetails = AndroidNotificationDetails(
           'xspin_notification_channel_id',
           'Xspin Notifications',
@@ -49,10 +45,9 @@ Future<void> _showLocalNotification(
           importance: Importance.high,
           priority: Priority.high,
           largeIcon: ByteArrayAndroidBitmap(response.data),
-          icon: '@drawable/notifications', // Giữ icon nhỏ mặc định
+          icon: '@drawable/notifications',
         );
       } else {
-        // Fallback nếu tải hình ảnh thất bại
         print('Failed to load image: Status ${response.statusCode}');
         androidDetails = const AndroidNotificationDetails(
           'xspin_notification_channel_id',
@@ -66,7 +61,6 @@ Future<void> _showLocalNotification(
       }
     } catch (e) {
       print('Error loading image with Dio: $e');
-      // Fallback nếu có lỗi
       androidDetails = const AndroidNotificationDetails(
         'xspin_notification_channel_id',
         'Xspin Notifications',
@@ -78,7 +72,6 @@ Future<void> _showLocalNotification(
       );
     }
   } else {
-    // Không có imageUrl, sử dụng biểu tượng mặc định
     androidDetails = const AndroidNotificationDetails(
       'xspin_notification_channel_id',
       'Xspin Notifications',
@@ -90,9 +83,8 @@ Future<void> _showLocalNotification(
     );
   }
 
-  NotificationDetails platformDetails = NotificationDetails(
-    android: androidDetails,
-  );
+  NotificationDetails platformDetails =
+      NotificationDetails(android: androidDetails);
 
   final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
   await localNotificationsPlugin.show(
@@ -103,31 +95,6 @@ Future<void> _showLocalNotification(
     payload: jsonEncode(data),
   );
 }
-// Future<void> _showLocalNotification(
-//     String? title, String? body, Map<String, dynamic> data) async {
-//   const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-//     'xspin_notification_channel_id',
-//     'Xspin Notifications',
-//     channelDescription: 'Thông báo Xspin',
-//     importance: Importance.high,
-//     priority: Priority.high,
-//     largeIcon: DrawableResourceAndroidBitmap('ic_notification'),
-//     icon: '@drawable/notifications',
-//   );
-
-//   const NotificationDetails platformDetails = NotificationDetails(
-//     android: androidDetails,
-//   );
-
-//   final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-//   await localNotificationsPlugin.show(
-//     DateTime.now().millisecondsSinceEpoch ~/ 1000,
-//     title,
-//     body,
-//     platformDetails,
-//     payload: jsonEncode(data),
-//   );
-// }
 
 class FirebaseApi {
   final firebaseMessaging = FirebaseMessaging.instance;
@@ -135,7 +102,8 @@ class FirebaseApi {
       FlutterLocalNotificationsPlugin();
   String FCM_TOPIC_ALL = "xspin_noti";
   String? token;
-
+  static NotiModel? noti;
+  static final NotiRequest _notiRequest = NotiRequest();
   Future<void> initNotifications() async {
     await firebaseMessaging.requestPermission(
       alert: true,
@@ -144,9 +112,9 @@ class FirebaseApi {
       sound: true,
     );
     await firebaseMessaging.subscribeToTopic(FCM_TOPIC_ALL);
-    FirebaseMessaging.onBackgroundMessage(_handleBackground);
+    FirebaseMessaging.onBackgroundMessage(
+        _handleBackground); // Bật xử lý background
     FirebaseMessaging.onMessage.listen(_handleForeground);
-    // FirebaseMessaging.onMessage
     await _initializeLocalNotifications();
   }
 
@@ -158,18 +126,16 @@ class FirebaseApi {
     print('Foreground Notification:');
     print("Data: ${message.data}");
 
-    // Lấy title, body và idNoTi từ data
-    final title = message.data['title'];
-    final body = message.data['body'];
-
+    // Chỉ sử dụng data, bỏ qua notification
+    final title = message.data['title'] ?? message.notification?.title;
+    final body = message.data['body'] ?? message.notification?.body;
     final idNoTi = message.data['idNoTi'] ?? '1';
-    print('Received idNoTi (foreground): $idNoTi'); // Log idNoTi
-    print('Received sss (foreground): $title'); // Log idNoTi
-    print('Received idNaaaaaaoTi (foreground): $body'); // Log idNoTi
+
+    print('Received idNoTi (foreground): $idNoTi');
+    print('Received title (foreground): $title');
+    print('Received body (foreground): $body');
     if (title != null && body != null) {
       await _showLocalNotification(title, body, message.data);
-
-      // await _updateBadgeCount();
     }
   }
 
@@ -190,7 +156,6 @@ class FirebaseApi {
       onDidReceiveNotificationResponse: onNotificationTap,
     );
 
-    // Tạo kênh thông báo cho Android 8.0+
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'xspin_notification_channel_id',
       'Xspin Notifications',
@@ -206,10 +171,9 @@ class FirebaseApi {
   static void onNotificationTap(NotificationResponse response) async {
     try {
       final data = jsonDecode(response.payload ?? '{}');
-
       print('Notification tapped: $data');
       String idNoTi = data['idNoTi'];
-      print('Tapped idNoTi: $idNoTi'); // Log idNoTi
+      print('Tapped idNoTi: $idNoTi');
     } catch (e) {
       print('Error in onNotificationTap: $e');
     }
