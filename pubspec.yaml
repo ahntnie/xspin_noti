@@ -44,7 +44,7 @@ dependencies:
   cloud_firestore:
   firebase_core:
   firebase_messaging:
-  flutter_local_notifications: ^10.0.0
+  flutter_local_notifications:
   flutter_app_badge: ^2.0.2
   google_fonts: ^6.2.1
   awesome_dialog: ^3.2.1
@@ -67,20 +67,20 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/icon_app.jpg"
+  image_path: "assets/images/icon_app.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true
-    image_path: "assets/images/icon_app.jpg"
+    image_path: "assets/images/icon_app_tron.png"
     background_color: "#hexcode"
     theme_color: "#hexcode"
   windows:
     generate: true
-    image_path: "assets/images/icon_app.jpg"
+    image_path: "assets/images/icon_app_tron.png"
     icon_size: 48 # min:48, max:256, default: 48
   macos:
     generate: true
-    image_path: "assets/images/icon_app.jpg"
+    image_path: "assets/images/icon_app_tron.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -93,17 +93,19 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/
     - assets/images/
     - assets/google_fonts/
   #   - images/a_dot_ham.jpeg
 flutter_native_splash:
+  android: true
   color: "#ed1925"
-  image: assets/images/icon_app.jpg # Thay bằng đường dẫn logo của bạn
+  image: assets/images/icon_app.png # Thay bằng đường dẫn logo của bạn
   fullscreen: true
 
   android_12:
     color: "#ed1925"
-    image: assets/images/icon_app.jpg
+    image: assets/images/icon_splash.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
