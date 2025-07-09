@@ -13,4 +13,6 @@ class Api {
   static const login = '/Login';
 
   static const updateToken = '/UpdateTokennoti';
+
+  static const getDetailNoti = '/GetChiTietNoTi';
 }

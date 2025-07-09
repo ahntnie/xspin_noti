@@ -33,6 +33,7 @@ class _GroupViewState extends State<GroupView> {
     return ViewModelBuilder.reactive(
       disposeViewModel: false,
       viewModelBuilder: () => widget.projectViewModel,
+      onViewModelReady: (viewModel) => viewModel.viewContext = context,
       builder: (context, viewModel, child) {
         return Scaffold(
           backgroundColor: AppColors.mono0,
@@ -139,7 +140,7 @@ class _GroupViewState extends State<GroupView> {
                               horizontal: 16.0,
                               vertical: 8.0,
                             ),
-                            onTap: () {
+                            onTap: () async {
                               viewModel.currentNoti =
                                   viewModel.notiModel![index];
                               viewModel.currentProject = viewModel
@@ -151,11 +152,20 @@ class _GroupViewState extends State<GroupView> {
                                       (project.idDuAn ?? ''))
                                   .toList()
                                   .first;
-                              Navigator.push(
+                              await viewModel.loadDetailNoti(
+                                  viewModel.notiModel![index].idPush);
+                              // if (!context.mounted) {
+                              //   print('RETURN');
+                              //   return;
+                              // }
+                              await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => DetailView(
-                                            projectViewModel: viewModel,
+                                            idPush: viewModel
+                                                    .notiModel![index].idPush ??
+                                                '',
+                                            notiModel: viewModel.detailNoti!,
                                           )));
                             },
                           );

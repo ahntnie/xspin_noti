@@ -16,9 +16,9 @@ class ProjectViewmodel extends BaseViewModel {
   List<ProjectModel>? projectsModel;
   List<ProjectModel>? projectsModelByID;
   List<NotiModel>? notiModel;
-
   ProjectModel? currentProject;
   NotiModel? currentNoti;
+  NotiModel? detailNoti;
   late BuildContext viewContext;
   ProjectRequest projectRequest = ProjectRequest();
   NotiRequest notiRequest = NotiRequest();
@@ -50,5 +50,14 @@ class ProjectViewmodel extends BaseViewModel {
     print('notiModel!.length: ${notiModel!.length}');
     setBusy(false);
     notifyListeners();
+  }
+
+  Future<void> loadDetailNoti(String? idPush) async {
+    // setBusy(true);
+    detailNoti = await notiRequest.handleGetDetailNoti(
+        IdThanhVien: AppSP.get(AppSPKey.idUser), IdPush: idPush!);
+    print('Ten noti: ${detailNoti!.noiDung}}');
+    // setBusy(false);
+    // notifyListeners();
   }
 }

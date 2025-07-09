@@ -7,9 +7,13 @@ import 'package:xspin_noti/utils/colors/app_theme.dart';
 import 'package:xspin_noti/view_models/project/projectNoti_viewModel.dart';
 
 class DetailView extends StatefulWidget {
-  const DetailView({super.key, required this.projectViewModel});
-  final ProjectViewmodel projectViewModel;
-
+  const DetailView({
+    super.key,
+    required this.idPush,
+    required this.notiModel,
+  });
+  final String idPush;
+  final NotiModel notiModel;
   @override
   State<DetailView> createState() => _DetailViewState();
 }
@@ -17,107 +21,98 @@ class DetailView extends StatefulWidget {
 class _DetailViewState extends State<DetailView> {
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder.reactive(
-        disposeViewModel: false,
-        viewModelBuilder: () => widget.projectViewModel,
-        onViewModelReady: (viewModel) async {
-          viewModel.viewContext = context;
-        },
-        builder: (context, viewModel, child) {
-          return Scaffold(
-            backgroundColor: AppColors.mono0,
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(80.0),
-              child: AppBar(
-                title: Text(
-                  widget.projectViewModel.currentProject!.tenDuAn ?? '',
-                  style: AppTheme.headLineLarge32.copyWith(
-                    color: AppColors.gradient100,
-                  ),
-                ),
-                leading: IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                backgroundColor: AppColors.mono0,
-                elevation: 4,
-                toolbarHeight: 80,
-                titleSpacing: 30,
-              ),
+    return Scaffold(
+      backgroundColor: AppColors.mono0,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80.0),
+        child: AppBar(
+          title: Text(
+            widget.notiModel.tenDuAn ?? '',
+            style: AppTheme.headLineLarge32.copyWith(
+              color: AppColors.gradient100,
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+          ),
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: AppColors.mono0,
+          elevation: 4,
+          toolbarHeight: 80,
+          titleSpacing: 30,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Image.network(
+                  widget.notiModel.hinhLogo ?? '',
+                  width: 40,
+                  height: 40,
+                ),
+                SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.network(
-                        widget.projectViewModel.currentProject!.hinhLogo!,
-                        width: 40,
-                        height: 40,
+                      Text(
+                        widget.notiModel.tieuDe ?? '',
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                        style: AppTheme.titleLarge20,
                       ),
-                      SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.projectViewModel.currentNoti!.tieuDe ?? '',
-                              softWrap: true,
-                              overflow: TextOverflow.visible,
-                              style: AppTheme.titleLarge20,
-                            ),
-                            Text(
-                              'Từ ${widget.projectViewModel.currentProject!.tenDuAn} ngày ${widget.projectViewModel.currentProject!.ngayTao}',
-                              style: AppTheme.bodyMedium14.copyWith(
-                                color: AppColors.mono100,
-                              ),
-                              softWrap: true,
-                              overflow: TextOverflow.visible,
-                            ),
-                            const SizedBox(height: 8),
-                          ],
+                      Text(
+                        'Từ ngày ${widget.notiModel.ngayTao}',
+                        style: AppTheme.bodyMedium14.copyWith(
+                          color: AppColors.mono100,
                         ),
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
                       ),
+                      const SizedBox(height: 8),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    widget.projectViewModel.currentNoti!.noiDung ??
-                        'Chưa có mô tả nào',
-                    style: AppTheme.bodyMedium14.copyWith(
-                      color: AppColors.mono100,
-                    ),
-                    softWrap: true,
-                    overflow: TextOverflow.visible,
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.copy_all),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.ios_share_rounded),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete_outline_outlined),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-        });
+            const SizedBox(height: 8),
+            Text(
+              widget.notiModel.noiDung ?? 'Chưa có mô tả nào',
+              style: AppTheme.bodyMedium14.copyWith(
+                color: AppColors.mono100,
+              ),
+              softWrap: true,
+              overflow: TextOverflow.visible,
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.copy_all),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.ios_share_rounded),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete_outline_outlined),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

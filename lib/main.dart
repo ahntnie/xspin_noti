@@ -10,14 +10,11 @@ import 'package:xspin_noti/firebase_options.dart';
 import 'package:xspin_noti/views/auth_view/login_view/login_view.dart';
 import 'package:xspin_noti/views/home_view/home_view.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Giữ splash screen
   FlutterNativeSplash.preserve(
       widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
-
-  // Khởi tạo Firebase
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -26,23 +23,14 @@ void main() async {
   } catch (e) {
     print('❌ Error initializing Firebase: $e');
   }
-
-  // Khởi tạo thông báo Firebase
   FirebaseApi firebaseApi = FirebaseApi();
   firebaseApi.initNotifications();
   String FCM_TOPIC_ALL = "xspin_noti";
   FirebaseMessaging.instance.subscribeToTopic(FCM_TOPIC_ALL);
-
-  // Khởi tạo Dependency Injection
   await DependencyInjection.init();
-
-  // Kiểm tra trạng thái đăng nhập
   final userJson = await AppSP.get(AppSPKey.userInfo);
   final isLoggedIn = userJson != null;
-
-  // Xóa splash screen sau khi kiểm tra
   FlutterNativeSplash.remove();
-
   runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
@@ -53,6 +41,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Xspin',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

@@ -25,8 +25,43 @@ class NotiRequest {
 
       if (response.data is List) {
         lstNoti = data!.map((json) => NotiModel.fromJson(json)).toList();
-
         return lstNoti;
+      } else {
+        print('Không nhận được dữ liệu');
+        return null;
+      }
+    } else {
+      print('Đăng nhập thất bại: Mã trạng thái ${response.statusCode}');
+      return null;
+    }
+  }
+
+  Future<NotiModel?> handleGetDetailNoti({
+    required String IdPush,
+    required String IdThanhVien,
+  }) async {
+    final Map<String, dynamic> body = {
+      "IdPush": IdPush,
+      "IdThanhVien": IdThanhVien,
+    };
+    final response = await ApiService().postRequest(
+        '${Api.hostApi}${Api.getDetailNoti}',
+        queryParameters: body,
+        customHeaders: {'Tokenquantri': AppSP.get(AppSPKey.tokenHeader)});
+    if (response.statusCode == 200) {
+      final data = response.data;
+      print('data ${data}');
+      if (data != null) {
+        final status = data['Status'];
+        if (status == 0) {
+          print('${data}');
+          print('Faild');
+          return null;
+        } else {
+          final notiModel = NotiModel.fromJson(data);
+
+          return notiModel;
+        }
       } else {
         print('Không nhận được dữ liệu');
         return null;

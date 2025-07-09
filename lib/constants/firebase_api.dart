@@ -3,9 +3,15 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:xspin_noti/app/app_sp.dart';
+import 'package:xspin_noti/app/app_sp_key.dart';
+import 'package:xspin_noti/main.dart';
 import 'package:xspin_noti/models/noti.model.dart';
 import 'package:xspin_noti/requests/noti_request.dart';
+import 'package:xspin_noti/view_models/project/projectNoti_viewModel.dart';
+import 'package:xspin_noti/views/detail_view/detail_view.dart';
 
 Future<void> _handleBackground(RemoteMessage message) async {
   await Firebase.initializeApp(); // Đảm bảo khởi tạo Firebase
@@ -104,6 +110,7 @@ class FirebaseApi {
   String? token;
   static NotiModel? noti;
   static final NotiRequest _notiRequest = NotiRequest();
+  static final ProjectViewmodel projectViewmodel = ProjectViewmodel();
   Future<void> initNotifications() async {
     await firebaseMessaging.requestPermission(
       alert: true,
@@ -172,8 +179,21 @@ class FirebaseApi {
     try {
       final data = jsonDecode(response.payload ?? '{}');
       print('Notification tapped: $data');
-      String idNoTi = data['idNoTi'];
-      print('Tapped idNoTi: $idNoTi');
+      String idPush = data['IdPush'];
+      noti = await _notiRequest.handleGetDetailNoti(
+          IdPush: idPush, IdThanhVien: AppSP.get(AppSPKey.idUser));
+
+      if (noti != null) {
+        navigatorKey.currentState?.push(
+          MaterialPageRoute(
+            builder: (context) => DetailView(
+              idPush: idPush,
+              notiModel: noti!,
+              // projectViewmodel: projectViewmodel,
+            ),
+          ),
+        );
+      }
     } catch (e) {
       print('Error in onNotificationTap: $e');
     }
