@@ -14,7 +14,7 @@ class LocalNotificationsService {
   late FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   //Android-specific initialization settings using app launcher icon
-  final _androidInitializationSettings = const AndroidInitializationSettings('@drawable/notification');
+  final _androidInitializationSettings = const AndroidInitializationSettings('@drawable/notifications');
 
   //iOS-specific initialization settings with permission requests
   final _iosInitializationSettings = const DarwinInitializationSettings(
@@ -25,9 +25,9 @@ class LocalNotificationsService {
 
   //Android notification channel configuration
   final _androidChannel = const AndroidNotificationChannel(
-    'tsgt_notification_channel_id',
-    'TS Screen Notifications',
-    description: 'Android push notification channel',
+    'xspin_notification_channel_id',
+    'Xspin Notifications',
+    description: 'Thong bao Xspin',
     importance: Importance.max,
   );
 
