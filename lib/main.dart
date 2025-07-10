@@ -10,7 +10,7 @@ import 'package:xspin_noti/firebase_options.dart';
 import 'package:xspin_noti/views/auth_view/login_view/login_view.dart';
 import 'package:xspin_noti/views/home_view/home_view.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(

@@ -14,7 +14,7 @@ import 'package:xspin_noti/view_models/project/projectNoti_viewModel.dart';
 import 'package:xspin_noti/views/detail_view/detail_view.dart';
 
 Future<void> _handleBackground(RemoteMessage message) async {
-  await Firebase.initializeApp(); // Đảm bảo khởi tạo Firebase
+  // await Firebase.initializeApp(); // Đảm bảo khởi tạo Firebase
   print('Background Notification: ${message.toMap()}');
   print("Data: ${message.data}");
   final title = message.data['title'] ?? message.notification?.title;
@@ -24,7 +24,7 @@ Future<void> _handleBackground(RemoteMessage message) async {
   print('Received title (background): $title');
   print('Received body (background): $body');
   if (title != null && body != null) {
-    await FlutterLocalNotificationsPlugin().cancelAll();
+    // await FlutterLocalNotificationsPlugin().cancelAll();
     _showLocalNotification(title, body, message.data);
   }
 }
@@ -182,7 +182,6 @@ class FirebaseApi {
       String idPush = data['IdPush'];
       noti = await _notiRequest.handleGetDetailNoti(
           IdPush: idPush, IdThanhVien: AppSP.get(AppSPKey.idUser));
-
       if (noti != null) {
         navigatorKey.currentState?.push(
           MaterialPageRoute(
