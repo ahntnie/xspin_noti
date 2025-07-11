@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -14,18 +13,17 @@ import 'package:xspin_noti/view_models/project/projectNoti_viewModel.dart';
 import 'package:xspin_noti/views/detail_view/detail_view.dart';
 
 Future<void> _handleBackground(RemoteMessage message) async {
-  // await Firebase.initializeApp(); // Đảm bảo khởi tạo Firebase
-  print('Background Notification: ${message.toMap()}');
+  print('Background Notification:');
   print("Data: ${message.data}");
-  final title = message.data['title'] ?? message.notification?.title;
-  final body = message.data['body'] ?? message.notification?.body;
-  final idNoTi = message.data['idNoTi'] ?? '1';
-  print('Received idNoTi (background): $idNoTi');
-  print('Received title (background): $title');
-  print('Received body (background): $body');
+
+  // Lấy title, body và idNoTi từ data
+  final title = message.data['title'];
+  final body = message.data['body'];
+  final idNoTi = message.data['idNoTi'];
+  print('Received idNoTi (background): $idNoTi'); // Log idNoTi
+
   if (title != null && body != null) {
-    // await FlutterLocalNotificationsPlugin().cancelAll();
-    _showLocalNotification(title, body, message.data);
+    await _showLocalNotification(title, body, message.data);
   }
 }
 
@@ -133,16 +131,15 @@ class FirebaseApi {
     print('Foreground Notification:');
     print("Data: ${message.data}");
 
-    // Chỉ sử dụng data, bỏ qua notification
-    final title = message.data['title'] ?? message.notification?.title;
-    final body = message.data['body'] ?? message.notification?.body;
-    final idNoTi = message.data['idNoTi'] ?? '1';
+    // Lấy title, body và idNoTi từ data
+    final title = message.data['title'];
+    final body = message.data['body'];
+    final idNoTi = message.data['idNoTi'];
+    print('Received idNoTi (foreground): $idNoTi'); // Log idNoTi
 
-    print('Received idNoTi (foreground): $idNoTi');
-    print('Received title (foreground): $title');
-    print('Received body (foreground): $body');
     if (title != null && body != null) {
       await _showLocalNotification(title, body, message.data);
+      // await _updateBadgeCount();
     }
   }
 
