@@ -9,8 +9,8 @@ import 'package:xspin_noti/views/detail_view/detail_view.dart';
 
 class GroupView extends StatefulWidget {
   const GroupView(
-      {super.key, required this.projectModel, required this.projectViewModel});
-  final ProjectModel projectModel;
+      {super.key, required this.id, required this.projectViewModel});
+  final String id;
   final ProjectViewmodel projectViewModel;
   @override
   State<GroupView> createState() => _GroupViewState();
@@ -22,9 +22,7 @@ class _GroupViewState extends State<GroupView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       widget.projectViewModel.viewContext = context;
-      await widget.projectViewModel.loadLstNoti(widget.projectModel.idDuAn!);
-      await widget.projectViewModel
-          .loadProjectDataByID(widget.projectModel.idDuAn!);
+      await widget.projectViewModel.loadLstNoti(widget.id);
     });
   }
 
@@ -50,7 +48,8 @@ class _GroupViewState extends State<GroupView> {
                 },
               ),
               title: Text(
-                widget.projectModel.tenDuAn ?? '',
+                widget.projectViewModel.projectsModelByID?.tenDuAn ??
+                    'Tất cả thông báo',
                 style: AppTheme.headLineLarge32.copyWith(
                   color: AppColors.gradient100,
                 ),
@@ -62,10 +61,7 @@ class _GroupViewState extends State<GroupView> {
           ),
           body: RefreshIndicator(
             onRefresh: () async {
-              await widget.projectViewModel
-                  .loadLstNoti(widget.projectModel.idDuAn!);
-              await widget.projectViewModel
-                  .loadProjectDataByID(widget.projectModel.idDuAn!);
+              await widget.projectViewModel.loadLstNoti(widget.id);
             },
             child: widget.projectViewModel.isBusy
                 ? Center(
@@ -76,8 +72,21 @@ class _GroupViewState extends State<GroupView> {
                   )
                 : widget.projectViewModel.notiModel == null ||
                         widget.projectViewModel.notiModel!.isEmpty
-                    ? const Center(child: Text('Không có dữ liệu'))
+                    ? ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 1.5,
+                              child: Center(
+                                child: Text(
+                                  'Không có dữ liệu',
+                                  style: AppTheme.bodyLarge16,
+                                ),
+                              ),
+                            ),
+                          ])
                     : ListView.separated(
+                        physics: const AlwaysScrollableScrollPhysics(),
                         itemCount: widget.projectViewModel.notiModel!.length,
                         itemBuilder: (context, index) {
                           return ListTile(
@@ -130,9 +139,7 @@ class _GroupViewState extends State<GroupView> {
                             ),
                             subtitle: Text(
                               '${widget.projectViewModel.notiModel![index].noiDung ?? ''}',
-                              style: AppTheme.bodySmall12.copyWith(
-                                  // color: AppColors.mono50,
-                                  ),
+                              style: AppTheme.bodySmall12,
                               softWrap: true,
                               overflow: TextOverflow.visible,
                             ),
@@ -154,19 +161,17 @@ class _GroupViewState extends State<GroupView> {
                                   .first;
                               await viewModel.loadDetailNoti(
                                   viewModel.notiModel![index].idPush);
-                              // if (!context.mounted) {
-                              //   print('RETURN');
-                              //   return;
-                              // }
                               await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DetailView(
-                                            idPush: viewModel
-                                                    .notiModel![index].idPush ??
-                                                '',
-                                            notiModel: viewModel.detailNoti!,
-                                          )));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailView(
+                                    idPush:
+                                        viewModel.notiModel![index].idPush ??
+                                            '',
+                                    notiModel: viewModel.detailNoti!,
+                                  ),
+                                ),
+                              );
                             },
                           );
                         },

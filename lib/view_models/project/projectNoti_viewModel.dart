@@ -14,7 +14,7 @@ import 'package:xspin_noti/views/auth_view/login_view/login_view.dart';
 
 class ProjectViewmodel extends BaseViewModel {
   List<ProjectModel>? projectsModel;
-  List<ProjectModel>? projectsModelByID;
+  ProjectModel? projectsModelByID;
   List<NotiModel>? notiModel;
   ProjectModel? currentProject;
   NotiModel? currentNoti;
@@ -35,12 +35,8 @@ class ProjectViewmodel extends BaseViewModel {
   }
 
   Future<void> loadProjectDataByID(String idDuAn) async {
-    setBusy(true);
     projectsModelByID = await projectRequest.handleLoadProjectByID(
         idThanhVien: AppSP.get(AppSPKey.idUser), idDuAn: idDuAn);
-    print('projectsModelByID!.length ${projectsModelByID!.length}');
-    setBusy(false);
-    notifyListeners();
   }
 
   Future<void> loadLstNoti(String idDuAn) async {

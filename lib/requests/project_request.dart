@@ -35,24 +35,30 @@ class ProjectRequest {
     }
   }
 
-  Future<List<ProjectModel>?> handleLoadProjectByID(
+  Future<ProjectModel?> handleLoadProjectByID(
       {required String idThanhVien, required String idDuAn}) async {
     final Map<String, dynamic> body = {
       "idThanhVien": idThanhVien,
       "IdDuAn": idDuAn
     };
-    List<ProjectModel> lstProject = [];
     final response = await ApiService().postRequest(
-        '${Api.hostApi}${Api.getListProjectByID}',
+        '${Api.hostApi}${Api.getProject}',
         queryParameters: body,
         customHeaders: {'Tokenquantri': AppSP.get(AppSPKey.tokenHeader)});
     if (response.statusCode == 200) {
-      List<dynamic>? data = response.data;
+      final data = response.data;
+      print('data ${data}');
+      if (data != null) {
+        final status = data['Status'];
+        if (status == 0) {
+          print('${data}');
+          print('Faild');
+          return null;
+        } else {
+          final projectModel = ProjectModel.fromJson(data);
 
-      if (response.data is List) {
-        lstProject = data!.map((json) => ProjectModel.fromJson(json)).toList();
-
-        return lstProject;
+          return projectModel;
+        }
       } else {
         print('Không nhận được dữ liệu');
         return null;

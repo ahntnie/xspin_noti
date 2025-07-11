@@ -34,9 +34,11 @@ class LoginViewModel extends BaseViewModel {
     String? token;
     token = await firebaseMessaging.getToken();
     print('token: $token');
+
     AppSP.set(AppSPKey.token, token);
     data = await loginRequest.handleLogin(
         maDangNhap: username.text, matKhau: password.text);
+    print('data ${data!.idThanhVien}');
     if (data != null) {
       await _saveUserToSharedPreferences(data!);
       Navigator.pushAndRemoveUntil(

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:stacked/stacked.dart';
@@ -18,8 +19,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  // Danh sách mẫu cho các thông báo
-
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProjectViewmodel>.reactive(
@@ -47,13 +46,9 @@ class _HomeViewState extends State<HomeView> {
                 titleSpacing: 30,
                 actions: [
                   Padding(
-                    padding: const EdgeInsets.only(
-                        right: 16.0), // Khoảng cách từ mép phải
+                    padding: const EdgeInsets.only(right: 16.0),
                     child: IconButton(
-                      icon: const Icon(
-                        Icons.settings,
-                        // color: AppColors.gr,
-                      ),
+                      icon: const Icon(Icons.settings),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -65,87 +60,148 @@ class _HomeViewState extends State<HomeView> {
                 ],
               ),
             ),
-            body: RefreshIndicator(
-              onRefresh: viewModel.loadProjectData,
-              child: viewModel.isBusy
-                  ? Center(
-                      child: LoadingAnimationWidget.threeRotatingDots(
-                        color: AppColors.prime100,
-                        size: 50,
-                      ),
-                    )
-                  : viewModel.projectsModel!.isEmpty
-                      ? const Center(child: Text('Không có thông báo nào!'))
-                      : ListView.separated(
-                          itemCount: viewModel.projectsModel!.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: Image.network(
-                                viewModel.projectsModel![index].hinhLogo! ??
-                                    '${Api.hostImage}viewModel.projectsModel![index].hinhLogo!',
-                                width: 40,
-                                height: 40,
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () async {
+                    // await viewModel.loadLstNoti('');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => GroupView(
+                                projectViewModel: viewModel, id: '')));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 12.0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/icon_app_tron.png',
+                              width: 40,
+                              height: 40,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'Tất cả thông báo',
+                              style: AppTheme.bodyHuge20.copyWith(
+                                color: AppColors.gradient100,
+                                fontWeight: FontWeight.bold,
                               ),
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    viewModel.projectsModel![index].tenDuAn ??
-                                        '',
-                                    style: AppTheme.bodyLarge16.copyWith(
-                                      color: AppColors.gradient100,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        viewModel.projectsModel![index].ngayTao!
-                                            .split(' ')[1],
-                                        softWrap: true,
-                                        overflow: TextOverflow.visible,
-                                      ),
-                                      const Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: AppColors.mono40,
-                                        size: 15,
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              subtitle: Text(
-                                '${viewModel.projectsModel![index].ngayTao ?? ''}',
-                                style: AppTheme.bodySmall12.copyWith(
-                                    // color: AppColors.mono50,
-                                    ),
-                                softWrap: true,
-                                overflow: TextOverflow.visible,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                                vertical: 8.0,
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => GroupView(
-                                            projectViewModel: viewModel,
-                                            projectModel: viewModel
-                                                .projectsModel![index])));
-                              },
-                            );
-                          },
-                          separatorBuilder: (context, index) => const Divider(
-                            height: 1,
-                            thickness: 1,
-                            color: AppColors.mono40,
-                            indent: 16,
-                            endIndent: 16,
-                          ),
+                            ),
+                          ],
                         ),
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          color: AppColors.mono40,
+                          size: 15,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: viewModel.loadProjectData,
+                    child: viewModel.isBusy
+                        ? Center(
+                            child: LoadingAnimationWidget.threeRotatingDots(
+                              color: AppColors.prime100,
+                              size: 50,
+                            ),
+                          )
+                        : viewModel.projectsModel!.isEmpty
+                            ? const Center(
+                                child: Text('Không có thông báo nào!'))
+                            : ListView.separated(
+                                itemCount: viewModel.projectsModel!.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    leading: Image.network(
+                                      viewModel.projectsModel![index]
+                                              .hinhLogo! ??
+                                          '${Api.hostImage}viewModel.projectsModel![index].hinhLogo!',
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          viewModel.projectsModel![index]
+                                                  .tenDuAn ??
+                                              '',
+                                          style: AppTheme.bodyLarge16.copyWith(
+                                            color: AppColors.gradient100,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              viewModel.projectsModel![index]
+                                                  .ngayTao!
+                                                  .split(' ')[1],
+                                              softWrap: true,
+                                              overflow: TextOverflow.visible,
+                                            ),
+                                            const Icon(
+                                              Icons.arrow_forward_ios,
+                                              color: AppColors.mono40,
+                                              size: 15,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    subtitle: Text(
+                                      '${viewModel.projectsModel![index].ngayTao ?? ''}',
+                                      style: AppTheme.bodySmall12.copyWith(),
+                                      softWrap: true,
+                                      overflow: TextOverflow.visible,
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                      vertical: 8.0,
+                                    ),
+                                    onTap: () async {
+                                      await viewModel.loadProjectDataByID(
+                                          viewModel.projectsModel![index]
+                                                  .idDuAn ??
+                                              '');
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => GroupView(
+                                                  projectViewModel: viewModel,
+                                                  id: viewModel
+                                                          .projectsModel![index]
+                                                          .idDuAn ??
+                                                      '')));
+                                    },
+                                  );
+                                },
+                                separatorBuilder: (context, index) =>
+                                    const Divider(
+                                  height: 1,
+                                  thickness: 1,
+                                  color: AppColors.mono40,
+                                  indent: 16,
+                                  endIndent: 16,
+                                ),
+                              ),
+                  ),
+                ),
+              ],
             ),
           );
         });
