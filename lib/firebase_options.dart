@@ -56,11 +56,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyD5TNGNihTTM-wEd6vKHqFxYrOjYvYmoHk',
-    appId: '1:974251765624:ios:9b604abea2a0540559a28d',
+    appId: '1:974251765624:ios:b4aafbaf13e571a759a28d',
     messagingSenderId: '974251765624',
     projectId: 'xspin-noti',
     storageBucket: 'xspin-noti.firebasestorage.app',
-    iosBundleId: 'com.example.xspinNoti',
+    iosBundleId: 'com.example.xspinNotifications',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
@@ -72,4 +72,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'xspin-noti.firebasestorage.app',
     measurementId: 'G-BLY6GNSY56',
   );
+
 }

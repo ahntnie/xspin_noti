@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.xspinNoti</string>
+	<string>com.example.xspinNotifications</string>
 	<key>PROJECT_ID</key>
 	<string>xspin-noti</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:974251765624:ios:9b604abea2a0540559a28d</string>
+	<string>1:974251765624:ios:b4aafbaf13e571a759a28d</string>
 </dict>
 </plist>
