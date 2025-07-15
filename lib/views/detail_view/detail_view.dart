@@ -29,18 +29,19 @@ class _DetailViewState extends State<DetailView> {
           title: Text(
             widget.notiModel.tenDuAn ?? '',
             style: AppTheme.headLineLarge32.copyWith(
-              color: AppColors.gradient100,
+              color: AppColors.mono0,
             ),
           ),
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back_ios,
+              color: AppColors.mono0,
             ),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          backgroundColor: AppColors.mono0,
+          backgroundColor: AppColors.prime100,
           elevation: 4,
           toolbarHeight: 80,
           titleSpacing: 30,
@@ -93,23 +94,6 @@ class _DetailViewState extends State<DetailView> {
               overflow: TextOverflow.visible,
             ),
             const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.copy_all),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.ios_share_rounded),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete_outline_outlined),
-                  onPressed: () {},
-                ),
-              ],
-            ),
           ],
         ),
       ),

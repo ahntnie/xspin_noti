@@ -36,11 +36,11 @@ class _HomeViewState extends State<HomeView> {
                 title: Text(
                   'Tất cả thông báo',
                   style: AppTheme.headLineLarge32.copyWith(
-                    color: AppColors.gradient100,
+                    color: AppColors.mono0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                backgroundColor: AppColors.mono0,
+                backgroundColor: AppColors.prime100,
                 elevation: 4,
                 toolbarHeight: 80,
                 titleSpacing: 30,
@@ -48,7 +48,10 @@ class _HomeViewState extends State<HomeView> {
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
                     child: IconButton(
-                      icon: const Icon(Icons.settings),
+                      icon: const Icon(
+                        Icons.settings,
+                        color: AppColors.mono0,
+                      ),
                       onPressed: () {
                         Navigator.push(
                             context,

@@ -41,20 +41,26 @@ class _GroupViewState extends State<GroupView> {
               leading: IconButton(
                 icon: const Icon(
                   Icons.arrow_back_ios,
-                  color: AppColors.gradient100,
+                  color: AppColors.mono0,
                 ),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
-              title: Text(
-                widget.projectViewModel.projectsModelByID?.tenDuAn ??
-                    'Tất cả thông báo',
-                style: AppTheme.headLineLarge32.copyWith(
-                  color: AppColors.gradient100,
-                ),
-              ),
-              backgroundColor: AppColors.mono0,
+              title: widget.id == ''
+                  ? Text(
+                      'Tất cả thông báo',
+                      style: AppTheme.headLineLarge32.copyWith(
+                        color: AppColors.mono0,
+                      ),
+                    )
+                  : Text(
+                      widget.projectViewModel.projectsModelByID?.tenDuAn ?? '',
+                      style: AppTheme.headLineLarge32.copyWith(
+                        color: AppColors.mono0,
+                      ),
+                    ),
+              backgroundColor: AppColors.prime100,
               elevation: 4,
               toolbarHeight: 80,
             ),

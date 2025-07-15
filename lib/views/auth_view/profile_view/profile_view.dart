@@ -28,20 +28,21 @@ class _ProfileViewState extends State<ProfileView> {
               title: Text(
                 'Thông tin',
                 style: AppTheme.headLineLarge32.copyWith(
-                  color: AppColors.gradient100,
+                  color: AppColors.mono0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               leading: IconButton(
                 icon: const Icon(
                   Icons.arrow_back_ios,
+                  color: AppColors.mono0,
                   // color: AppColors.mono0,
                 ),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
-              backgroundColor: AppColors.mono0,
+              backgroundColor: AppColors.prime100,
               elevation: 4,
               toolbarHeight: 80,
               titleSpacing: 30,
